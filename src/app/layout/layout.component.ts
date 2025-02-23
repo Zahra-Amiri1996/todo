@@ -1,41 +1,26 @@
 import {
-  Component, computed,
-  effect,
-  EffectRef, HostListener,
-  inject, input,
-  OnDestroy,
+  Component , HostListener,
   OnInit,
   signal,
-  viewChild
 } from '@angular/core';
-import {
-  MatDrawer,
-  MatDrawerContainer,
-  MatSidenav,
-  MatSidenavContainer,
-  MatSidenavContent
-} from '@angular/material/sidenav';
-import { RouterLink, RouterOutlet } from '@angular/router';
-import { ToolbarComponent } from './partial/toolbar/toolbar.component';
-import { DeviceDetectionService } from '../services/device-detection-service';
-import { MatListItem, MatNavList } from '@angular/material/list';
-import { MatIcon } from '@angular/material/icon';
-import { NgClass, NgIf } from '@angular/common';
-import { MatButton } from '@angular/material/button';
 import { MainComponent } from './partial/main/main.component';
 import { RightSideComponent } from './partial/right-side/right-side.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-layout',
   imports: [
     MainComponent,
-    RightSideComponent,
+    RightSideComponent
   ],
   templateUrl: './layout.component.html',
   standalone: true,
-  styleUrl: './layout.component.scss'
+  styleUrl: './layout.component.scss',
+  providers: [
+    MatDatepickerModule,
+  ],
 })
-export class LayoutComponent {
+export class LayoutComponent implements OnInit{
   isLeftSidebarCollapsed = signal<boolean>(false);
   screenWidth = signal<number>(window.innerWidth);
 

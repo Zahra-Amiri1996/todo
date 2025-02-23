@@ -18,7 +18,7 @@ export class RightSideComponent {
   changeIsLeftSidebarCollapsed = output<boolean>();
   items = [
     {
-      routeLink: 'home',
+      routeLink: 'list',
       icon: 'fal fa-home',
       label: 'لیست کارهای روزمره',
     },

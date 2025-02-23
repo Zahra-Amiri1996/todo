@@ -5,6 +5,9 @@
   [hasAddRowButton]="true"
   [hasRemoveRowButton]="true"
   [hasAddListButton]="true"
+  (deleteTask)="deleteTask($event)"
+  (editTask)="editTask($event)"
 >
 </app-base-list>
-asdfasdf
+
+<router-outlet/>

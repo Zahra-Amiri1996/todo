@@ -8,9 +8,12 @@ body {
   position: relative;
   font-family: "Roboto", sans-serif;
   background: #f4f7fa;
+
 }
 
-
+html body {
+  height: 100%;
+}
 @font-face {
   font-family: 'yekan';
   src: url('/fonts/BYekan.ttf') format('truetype');

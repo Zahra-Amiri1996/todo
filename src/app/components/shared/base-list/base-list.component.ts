@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import {
   MatCell, MatCellDef,
   MatColumnDef,
@@ -10,6 +10,9 @@ import {
 } from '@angular/material/table';
 import { ColumnModel } from './models/column.model';
 import { MatButton, MatButtonModule } from '@angular/material/button';
+import { Router } from '@angular/router';
+import { CurrencyPipe, DatePipe, NgTemplateOutlet } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-base-list',
@@ -24,7 +27,11 @@ import { MatButton, MatButtonModule } from '@angular/material/button';
     MatTable,
     MatCellDef,
     MatHeaderCellDef,
-    MatButtonModule
+    MatButtonModule,
+    CurrencyPipe,
+    DatePipe,
+    MatIcon,
+    NgTemplateOutlet
   ],
   templateUrl: './base-list.component.html',
   standalone: true,
@@ -36,5 +43,22 @@ export class BaseListComponent<T> {
   displayedColumns = input.required<string[]>();
   hasRemoveRowButton = input(false);
   hasAddRowButton = input(false);
-  hasAddListButton = input(false)
+  hasAddListButton = input(false);
+
+  editTask = output<T>();
+  deleteTask = output<T>();
+
+  router = inject(Router);
+
+  gotoCreateTask() {
+    this.router.navigate(['list', 'task']).then();
+  }
+
+  edit(row: T) {
+    this.editTask.emit(row);
+  }
+
+  delete(row: T) {
+    this.deleteTask.emit(row);
+  }
 }

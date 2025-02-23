@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ListModel } from '../models/list.model';
 
 @Injectable({
@@ -8,24 +8,58 @@ import { ListModel } from '../models/list.model';
 })
 
 export class BaseApiService {
+  http = inject(HttpClient);
+  private baseUrl = 'http://localhost:3000/api';
 
-  constructor(private http: HttpClient) {
+  getAllTasks(): Observable<ListModel[]> {
+    return this.http.get<ListModel[]>(`${this.baseUrl}/tasks`);
   }
 
-
-  get(): Observable<ListModel> {
-    return of();
+  getTasksByList(listId: string): Observable<ListModel[]> {
+    return this.http.get<ListModel[]>(`${this.baseUrl}/tasks/query/${listId}`);
   }
 
-  post(): Observable<ListModel> {
-    return of();
+  getTaskById(taskId: string): Observable<ListModel> {
+    return this.http.get<ListModel>(`${this.baseUrl}/tasks/${taskId}`);
   }
 
-  delete(): Observable<ListModel> {
-    return of();
+  createTask(task: ListModel): Observable<ListModel> {
+    return this.http.post<ListModel>(`${this.baseUrl}/tasks`, task);
   }
 
-  put(): Observable<ListModel> {
-    return of();
+  updateTask(taskId: string, task: ListModel): Observable<ListModel> {
+    return this.http.put<ListModel>(`${this.baseUrl}/tasks/${taskId}`, task);
+  }
+
+  deleteTask(taskId: string): Observable<any> {
+    return this.http.delete<any>(`${this.baseUrl}/tasks/${taskId}`);
+  }
+
+  getCompletedTasks(): Observable<ListModel[]> {
+    return this.http.get<ListModel[]>(`${this.baseUrl}/compeleted`);
+  }
+
+  getAllLists(): Observable<ListModel[]> {
+    return this.http.get<ListModel[]>(`${this.baseUrl}/lists`);
+  }
+
+  getMainList(): Observable<ListModel> {
+    return this.http.get<ListModel>(`${this.baseUrl}/mainList`);
+  }
+
+  getListById(listId: string): Observable<ListModel> {
+    return this.http.get<ListModel>(`${this.baseUrl}/lists/${listId}`);
+  }
+
+  createList(list: ListModel): Observable<ListModel> {
+    return this.http.post<ListModel>(`${this.baseUrl}/lists`, list);
+  }
+
+  updateList(listId: string, list: ListModel): Observable<ListModel> {
+    return this.http.put<ListModel>(`${this.baseUrl}/lists/${listId}`, list);
+  }
+
+  deleteList(listId: string): Observable<any> {
+    return this.http.delete<any>(`${this.baseUrl}/lists/${listId}`);
   }
 }
