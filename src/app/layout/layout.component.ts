@@ -1,8 +1,8 @@
 import {
-  Component,
+  Component, computed,
   effect,
-  EffectRef,
-  inject,
+  EffectRef, HostListener,
+  inject, input,
   OnDestroy,
   OnInit,
   signal,
@@ -22,66 +22,36 @@ import { MatListItem, MatNavList } from '@angular/material/list';
 import { MatIcon } from '@angular/material/icon';
 import { NgClass, NgIf } from '@angular/common';
 import { MatButton } from '@angular/material/button';
+import { MainComponent } from './partial/main/main.component';
+import { RightSideComponent } from './partial/right-side/right-side.component';
 
 @Component({
   selector: 'app-layout',
   imports: [
-    MatSidenavContent,
-    RouterOutlet,
-    MatSidenavContainer,
-    MatIcon,
-    MatListItem,
-    MatSidenav,
-    ToolbarComponent,
-    MatNavList,
-    RouterLink,
-    NgClass,
-    MatDrawer,
-    MatDrawerContainer,
-    MatButton,
-    NgIf
+    MainComponent,
+    RightSideComponent,
   ],
   templateUrl: './layout.component.html',
   standalone: true,
   styleUrl: './layout.component.scss'
 })
-export class LayoutComponent implements OnDestroy, OnInit {
-  deviceDetectionServiceService = inject(DeviceDetectionService);
-  sidenav = viewChild(MatSidenav);
-  isMobile = signal(false);
-  isCollapsed = signal(false);
-  items = signal<{ id: number, name: string, route: string, icon: string }[]>([]);
+export class LayoutComponent {
+  isLeftSidebarCollapsed = signal<boolean>(false);
+  screenWidth = signal<number>(window.innerWidth);
 
-  private isMobileEffectRef: EffectRef;
-
-  constructor() {
-    this.isMobileEffectRef = effect(() => {
-      this.isMobile.set(this.deviceDetectionServiceService.isMobile());
-    });
-  }
-
-  toggleSidebar() {
-    if (this.isMobile()) {
-      this.sidenav()?.toggle();
-      this.isCollapsed.set(true);
-    } else {
-      this.sidenav()?.open();
-      this.isCollapsed.set(!this.isCollapsed());
+  @HostListener('window:resize')
+  onResize() {
+    this.screenWidth.set(window.innerWidth);
+    if (this.screenWidth() < 768) {
+      this.isLeftSidebarCollapsed.set(true);
     }
   }
 
-  ngOnDestroy(): void {
-    this.isMobileEffectRef.destroy();
-  }
-
-  setStaticRoutes() {
-    this.items.set([
-      {id: 1, name: 'لیست کارهای روزمره', icon: 'view_list', route: 'home'},
-      {id: 2, name: 'لیست کارهای روزمره', icon: 'done_outline', route: 'completed-task'},
-    ]);
-  }
-
   ngOnInit(): void {
-    this.setStaticRoutes();
+    this.isLeftSidebarCollapsed.set(this.screenWidth() < 768);
+  }
+
+  changeIsLeftSidebarCollapsed(isLeftSidebarCollapsed: boolean): void {
+    this.isLeftSidebarCollapsed.set(isLeftSidebarCollapsed);
   }
 }
