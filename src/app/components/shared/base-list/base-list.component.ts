@@ -9,6 +9,7 @@ import {
   MatRowDef, MatTable
 } from '@angular/material/table';
 import { ColumnModel } from './models/column.model';
+import { MatButton, MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-base-list',
@@ -22,7 +23,8 @@ import { ColumnModel } from './models/column.model';
     MatColumnDef,
     MatTable,
     MatCellDef,
-    MatHeaderCellDef
+    MatHeaderCellDef,
+    MatButtonModule
   ],
   templateUrl: './base-list.component.html',
   standalone: true,
@@ -34,4 +36,5 @@ export class BaseListComponent<T> {
   displayedColumns = input.required<string[]>();
   hasRemoveRowButton = input(false);
   hasAddRowButton = input(false);
+  hasAddListButton = input(false)
 }

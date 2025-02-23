@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class DeviceDetectionServiceService implements OnDestroy {
+export class DeviceDetectionService implements OnDestroy {
   isMobile = signal<boolean>(false);
   breakpointObserver = inject(BreakpointObserver);
   subscriptions = new Subscription();
