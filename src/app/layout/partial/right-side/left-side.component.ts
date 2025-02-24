@@ -24,7 +24,7 @@ export class LeftSideComponent {
     },
     {
       routeLink: 'another-list',
-      icon: 'fal fa-home',
+      icon: 'fa fa-smile',
       label: 'another list',
     },
     {
