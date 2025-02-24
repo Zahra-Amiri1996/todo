@@ -1,3 +1,9 @@
+<div class="daily-task-list-container">
+  <div class="header">
+    <button mat-flat-button>ADD LIST</button>
+  </div>
+</div>
+
 <app-base-list
   [columns]="columns()"
   [dataSource]="dataSource()"
@@ -5,9 +11,8 @@
   [hasAddRowButton]="true"
   [hasRemoveRowButton]="true"
   [hasAddListButton]="true"
-  (deleteTask)="deleteTask($event)"
-  (editTask)="editTask($event)"
+  (deleteTask)="deleteList($event)"
+  (editTask)="editList($event)"
+  (addTask)="addList($event)"
 >
 </app-base-list>
-
-<router-outlet/>

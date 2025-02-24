@@ -1,6 +1,11 @@
 <app-base-list
   [columns]="columns()"
   [dataSource]="dataSource()"
-  [displayedColumns]="displayedColumns()">
+  [displayedColumns]="displayedColumns()"
+  [hasAddRowButton]="false"
+  [hasRemoveRowButton]="true"
+  [hasAddListButton]="false"
+  (deleteTask)="deleteTask($event)"
+  (editTask)="viewTask($event)"
+>
 </app-base-list>
-asdfasdfasdfa

@@ -3,14 +3,15 @@ import { BaseListComponent } from '../../shared/base-list/base-list.component';
 import { ColumnModel } from '../../shared/base-list/models/column.model';
 import { ListModel } from '../../../models/list.model';
 import { BaseApiService } from '../../../services/base-api.service';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-daily-task-list',
   imports: [
     BaseListComponent,
-    RouterOutlet
+    MatButton,
   ],
   templateUrl: './daily-task-list.component.html',
   standalone: true,
@@ -19,8 +20,9 @@ import { Subscription } from 'rxjs';
 export class DailyTaskListComponent implements OnInit, OnDestroy {
   columns = signal<ColumnModel<ListModel>[]>([]);
   dataSource = signal<ListModel[]>([]);
-  displayedColumns = signal<string[]>(['title', 'description', 'date', 'actions']);
+  displayedColumns = signal<string[]>(['title', 'date', 'isMain' ,  'actions']);
   baseApiService = inject(BaseApiService);
+  router = inject(Router);
   subscriptions = new Subscription();
 
   ngOnInit(): void {
@@ -37,16 +39,16 @@ export class DailyTaskListComponent implements OnInit, OnDestroy {
         type: 'string'
       },
       {
-        columnDef: 'description',
-        header: 'description',
-        cell: (element: ListModel) => `${element.description}`,
-        type: 'string'
-      },
-      {
         columnDef: 'date',
         header: 'date',
         cell: (element: ListModel) => `${element.date}`,
         type: 'date'
+      },
+      {
+        columnDef: 'isMain',
+        header: 'isMain',
+        cell: (element: ListModel) => `${element.isMain}`,
+        type: 'string'
       },
       {
         columnDef: 'actions',
@@ -58,7 +60,7 @@ export class DailyTaskListComponent implements OnInit, OnDestroy {
   }
 
   getData(): void {
-    const subscription = this.baseApiService.getAllTasks().subscribe({
+    const subscription = this.baseApiService.getAllLists().subscribe({
       next: (res) => {
         this.dataSource.set(res);
       },
@@ -69,9 +71,9 @@ export class DailyTaskListComponent implements OnInit, OnDestroy {
     this.subscriptions.add(subscription);
   }
 
-  deleteTask(row: ListModel): void {
+  deleteList(row: ListModel): void {
     if (row._id) {
-      const subscription = this.baseApiService.deleteTask(row._id).subscribe({
+      const subscription = this.baseApiService.deleteList(row._id).subscribe({
         next: () => {
           this.getData();
         },
@@ -83,19 +85,18 @@ export class DailyTaskListComponent implements OnInit, OnDestroy {
     }
   }
 
-  editTask(row: ListModel): void {
-    // if (row._id) {
-    //   const subscription = this.baseApiService.get(row._id).subscribe({
-    //     next: () => {
-    //       this.getData();
-    //     },
-    //     error: () => {
-    //       alert('we have an error :(');
-    //     }
-    //   });
-    //   this.subscriptions.add(subscription);
-    // }
+  editList(row: ListModel): void {
+    if (row._id) {
+      this.router.navigate([ 'task', row._id]).then();
+    }
   }
+
+  addList(row: ListModel): void {
+    if (row._id) {
+      this.router.navigate([ 'task']).then();
+    }
+  }
+
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();

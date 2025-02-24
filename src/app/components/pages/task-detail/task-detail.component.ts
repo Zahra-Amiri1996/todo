@@ -30,7 +30,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatDatepickerToggle,
     MatDatepicker,
     MatIconModule,
-    MatButtonModule,  MatDatepickerModule,
+    MatButtonModule, MatDatepickerModule,
     MatNativeDateModule,
   ],
 
@@ -61,9 +61,22 @@ export class TaskDetailComponent implements OnInit, OnDestroy {
     if (taskId) {
       this.taskId.set(taskId);
       this.isEditMode.set(true);
+      this.setFormDataInEditMode();
     } else {
       this.isEditMode.set(false);
     }
+  }
+
+  setFormDataInEditMode(): void {
+    const subscription = this.baseApiService.getTaskById(this.taskId()).subscribe({
+      next: (res) => {
+        console.log(res);
+        this.taskForm().patchValue(res);
+      },
+      error: () => {
+      }
+    });
+    this.subscriptions.add(subscription);
   }
 
   onSubmit() {
@@ -97,7 +110,7 @@ export class TaskDetailComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  openDatePicker(picker : MatDatepicker<any>){
-    picker.open()
+  openDatePicker(picker: MatDatepicker<any>) {
+    picker.open();
   }
 }

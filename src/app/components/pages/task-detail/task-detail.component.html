@@ -3,7 +3,6 @@
     <div class="task-form-container">
       <h2>Create Task</h2>
       <form [formGroup]="taskForm()" (ngSubmit)="onSubmit()">
-        <!-- Input برای Title -->
         <mat-form-field appearance="outline">
           <mat-label>Title</mat-label>
           <input matInput id="title" type="text" formControlName="title" placeholder="Enter task title" />
@@ -13,7 +12,6 @@
             </mat-error>
           }
         </mat-form-field>
-        <!-- Input برای Description -->
         <mat-form-field appearance="outline">
           <mat-label>Description</mat-label>
           <textarea

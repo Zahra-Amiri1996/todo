@@ -47,12 +47,12 @@ export class BaseListComponent<T> {
 
   editTask = output<T>();
   deleteTask = output<T>();
-
+  addTask = output<T>();
   router = inject(Router);
 
-  gotoCreateTask() {
-    this.router.navigate(['list', 'task']).then();
-  }
+  // gotoCreateTask() {
+  //   this.router.navigate(['list', 'task']).then();
+  // }
 
   edit(row: T) {
     this.editTask.emit(row);
@@ -60,5 +60,9 @@ export class BaseListComponent<T> {
 
   delete(row: T) {
     this.deleteTask.emit(row);
+  }
+
+  add(row: T): void {
+    this.addTask.emit(row);
   }
 }
