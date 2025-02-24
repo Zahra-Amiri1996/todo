@@ -34,15 +34,15 @@ export const layoutRoutes: Routes = [
   },
   {
     path: 'list-detail',
-    loadComponent: () => import('../components/pages/another-list/partial/list-detail/list-detail.component').then(c => c.ListDetailComponent),
+    loadComponent: () => import('../components/pages/list-detail/list-detail.component').then(c => c.ListDetailComponent),
   },
   {
     path: 'list-detail/:id',
-  loadComponent: () => import('../components/pages/another-list/partial/list-detail/list-detail.component').then(c => c.ListDetailComponent),
+  loadComponent: () => import('../components/pages/list-detail/list-detail.component').then(c => c.ListDetailComponent),
   },
   {
     path: 'tasks/:id',
-    loadComponent: () => import('../components/pages/another-list/partial/tasks/tasks.component').then(c => c.TasksComponent),
+    loadComponent: () => import('../components/pages/tasks/tasks.component').then(c => c.TasksComponent),
   },
   {
     path: '**',

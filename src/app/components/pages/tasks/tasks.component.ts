@@ -11,12 +11,12 @@ import {
   MatRowDef, MatTable
 } from '@angular/material/table';
 import { MatIcon } from '@angular/material/icon';
-import { ListModel } from '../../../../../models/list.model';
-import { BaseApiService } from '../../../../../services/base-api.service';
+import { ListModel } from '../../../models/list.model';
+import { BaseApiService } from '../../../services/base-api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { ColumnModel } from '../../../../../models/column.model';
-import { TaskModel } from '../../../../../models/task.model';
+import { ColumnModel } from '../../../models/column.model';
+import { TaskModel } from '../../../models/task.model';
 
 @Component({
   selector: 'app-tasks',

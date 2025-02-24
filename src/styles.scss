@@ -4,28 +4,23 @@
   box-sizing: border-box;
 }
 
+html body {
+  height: 100%;
+}
+
 body {
   position: relative;
   font-family: "Roboto", sans-serif;
   background: #f4f7fa;
-
 }
 
-html body {
-  height: 100%;
-}
-@font-face {
-  font-family: 'yekan';
-  src: url('/fonts/BYekan.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
+.table-container {
+  width: 100%;
+  border-radius: 6px;
+  overflow: hidden;
 }
 
-@font-face {
-  font-family: 'yekan';
-  src: url('/fonts/BYekan+Bold.ttf') format('truetype');
-  font-weight: bold;
-  font-style: normal;
+.mat-elevation-z8 {
+  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, .2), 0 6px 10px 0 rgba(0, 0, 0, .14), 0 1px 18px 0 rgba(0, 0, 0, .12);
 }
-
 
