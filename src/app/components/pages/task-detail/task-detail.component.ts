@@ -14,6 +14,7 @@ import {
 } from '@angular/material/datepicker';
 import { MatIconModule } from '@angular/material/icon';
 import { MatNativeDateModule } from '@angular/material/core';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-task-detail',
@@ -30,7 +31,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatDatepickerToggle,
     MatDatepicker,
     MatIconModule,
-    MatButtonModule, MatDatepickerModule,
+    MatButtonModule,
+    MatDatepickerModule,
     MatNativeDateModule,
   ],
 
@@ -41,36 +43,43 @@ import { MatNativeDateModule } from '@angular/material/core';
 export class TaskDetailComponent implements OnInit, OnDestroy {
   isEditMode = signal(false);
   taskId = signal('');
+  listId = signal('');
   baseApiService = inject(BaseApiService);
   formBuilder = inject(FormBuilder);
   activatedRoute = inject(ActivatedRoute);
+  location = inject(Location);
   subscriptions = new Subscription();
   taskForm = signal<FormGroup>(this.formBuilder.group({
     title: ['', Validators.required],
     description: ['', Validators.required],
     date: ['', Validators.required],
-
   }));
 
   ngOnInit() {
-    this.detectEditMode();
+    this.getQueryParamsValue();
   }
 
-  detectEditMode(): void {
-    const taskId = this.activatedRoute.snapshot.paramMap.get('id');
-    if (taskId) {
-      this.taskId.set(taskId);
-      this.isEditMode.set(true);
-      this.setFormDataInEditMode();
-    } else {
-      this.isEditMode.set(false);
-    }
+  getQueryParamsValue(): void {
+    this.activatedRoute.queryParamMap.subscribe((params) => {
+      const listId = params.get('listId');
+      const taskId = params.get('taskId');
+      if(listId){
+        this.listId.set(listId);
+      }
+      if (taskId) {
+        this.taskId.set(taskId);
+        this.isEditMode.set(true);
+        this.setFormDataInEditMode();
+      } else {
+        this.isEditMode.set(false);
+      }
+      console.log('List ID:', this.listId());
+    });
   }
 
   setFormDataInEditMode(): void {
     const subscription = this.baseApiService.getTaskById(this.taskId()).subscribe({
       next: (res) => {
-        console.log(res);
         this.taskForm().patchValue(res);
       },
       error: () => {
@@ -82,10 +91,10 @@ export class TaskDetailComponent implements OnInit, OnDestroy {
   onSubmit() {
     // todo add spinner
     if (this.taskForm().invalid) {
-      alert('فرمت رو کامل پر نکردی :(');
+      alert('Not COMPLETED');
       return;
     }
-    const task = this.taskForm().value;
+    const task = {...this.taskForm().value , list : this.listId()};
 
     const api = this.isEditMode() ? this.baseApiService.createTask({
       ...task,
@@ -95,11 +104,12 @@ export class TaskDetailComponent implements OnInit, OnDestroy {
     const subscription = api.subscribe(
       {
         next: () => {
-          alert('کار به خوبیییییی و موفقیت ثبت شد!!!!! :)');
+          alert('DONE');
           this.taskForm().reset();
+          this.location.back();
         },
         error: () => {
-          alert('متاسفانه کار ثبت نشد میتونی دوباره تلاش کنی :)');
+          alert('ERROR');
         }
       }
     );

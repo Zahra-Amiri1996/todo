@@ -23,6 +23,11 @@ export class RightSideComponent {
       label: 'لیست کارهای روزمره',
     },
     {
+      routeLink: 'another-list',
+      icon: 'fal fa-home',
+      label: 'another-list',
+    },
+    {
       routeLink: 'completed-task',
       icon: 'fal fa-box-open',
       label: 'لیست کارهای انجام شده',
