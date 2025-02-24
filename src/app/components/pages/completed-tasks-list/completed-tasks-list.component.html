@@ -1,11 +1,31 @@
-<app-base-list
-  [columns]="columns()"
-  [dataSource]="dataSource()"
-  [displayedColumns]="displayedColumns()"
-  [hasAddRowButton]="false"
-  [hasRemoveRowButton]="true"
-  [hasAddListButton]="false"
-  (deleteTask)="deleteTask($event)"
-  (editTask)="viewTask($event)"
->
-</app-base-list>
+<div class="main-container">
+  <table mat-table [dataSource]="dataSource()" class="mat-elevation-z8 table-container">
+    @for (column of columns(); track column) {
+      <ng-container [matColumnDef]="column.columnDef">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ column.header }}
+        </th>
+        <td mat-cell *matCellDef="let row">
+          @switch (column.type) {
+            @case ('date') {
+              <span>{{ column.cell(row) | date:'yyyy/MM/dd' }}</span>
+            }
+            @case ('template') {
+              <ng-container *ngTemplateOutlet="actionTemplate; context: { $implicit: row }"></ng-container>
+            }
+            @default {
+              <span>{{ column.cell(row) }}</span>
+            }
+          }
+        </td>
+      </ng-container>
+    }
+    <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns();"></tr>
+  </table>
+  <ng-template #actionTemplate let-row>
+    <button mat-icon-button (click)="deleteTask(row)">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </ng-template>
+</div>

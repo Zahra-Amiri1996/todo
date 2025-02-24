@@ -1,6 +1,5 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { BaseListComponent } from '../../shared/base-list/base-list.component';
-import { ColumnModel } from '../../shared/base-list/models/column.model';
+import { ColumnModel } from '../../../models/column.model';
 import { ListModel } from '../../../models/list.model';
 import { BaseApiService } from '../../../services/base-api.service';
 import { Router, RouterOutlet } from '@angular/router';
@@ -85,9 +84,9 @@ export class DailyTaskListComponent implements OnInit, OnDestroy {
   }
 
   getData(): void {
-    const subscription = this.baseApiService.getAllLists().subscribe({
+    const subscription = this.baseApiService.getMainList().subscribe({
       next: (res) => {
-        this.dataSource.set(res);
+        this.dataSource.set([res]);
       },
       error: () => {
         alert('we have an error :(');
@@ -121,7 +120,6 @@ export class DailyTaskListComponent implements OnInit, OnDestroy {
       this.router.navigate([ 'task']).then();
     }
   }
-
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();

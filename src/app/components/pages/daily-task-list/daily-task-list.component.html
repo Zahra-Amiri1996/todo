@@ -3,22 +3,6 @@
     <button mat-flat-button>ADD LIST</button>
   </div>
 </div>
-
-<!--<app-base-list-->
-<!--  [columns]="columns()"-->
-<!--  [dataSource]="dataSource()"-->
-<!--  [displayedColumns]="displayedColumns()"-->
-<!--  [hasAddRowButton]="true"-->
-<!--  [hasRemoveRowButton]="true"-->
-<!--  [hasAddListButton]="true"-->
-<!--  (deleteTask)="deleteList($event)"-->
-<!--  (editTask)="editList($event)"-->
-<!--  (addTask)="addList($event)"-->
-<!--&gt;-->
-<!--</app-base-list>-->
-
-
-<!--*******************************************-->
 <table mat-table [dataSource]="dataSource()" class="mat-elevation-z8 table-container">
   @for (column of columns(); track column) {
     <ng-container [matColumnDef]="column.columnDef">

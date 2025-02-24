@@ -1,8 +1,9 @@
+<app-left-side
+  [isLeftSidebarCollapsed]="isLeftSidebarCollapsed()"
+  (changeIsLeftSidebarCollapsed)="changeIsLeftSidebarCollapsed($event)"
+/>
+
 <app-main
   [isLeftSidebarCollapsed]="isLeftSidebarCollapsed()"
   [screenWidth]="screenWidth()"
-/>
-<app-right-side
-  [isLeftSidebarCollapsed]="isLeftSidebarCollapsed()"
-  (changeIsLeftSidebarCollapsed)="changeIsLeftSidebarCollapsed($event)"
 />

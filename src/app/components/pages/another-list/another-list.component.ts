@@ -15,7 +15,7 @@ import {
 import { MatIcon } from '@angular/material/icon';
 import { ListModel } from '../../../models/list.model';
 import { Router } from '@angular/router';
-import { ColumnModel } from '../../shared/base-list/models/column.model';
+import { ColumnModel } from '../../../models/column.model';
 
 @Component({
   selector: 'app-another-list',

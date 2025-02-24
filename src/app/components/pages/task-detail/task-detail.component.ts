@@ -63,7 +63,7 @@ export class TaskDetailComponent implements OnInit, OnDestroy {
     this.activatedRoute.queryParamMap.subscribe((params) => {
       const listId = params.get('listId');
       const taskId = params.get('taskId');
-      if(listId){
+      if (listId) {
         this.listId.set(listId);
       }
       if (taskId) {
@@ -94,12 +94,12 @@ export class TaskDetailComponent implements OnInit, OnDestroy {
       alert('Not COMPLETED');
       return;
     }
-    const task = {...this.taskForm().value , list : this.listId()};
+    const task = {...this.taskForm().value, list: this.listId()};
 
     const api = this.isEditMode() ? this.baseApiService.createTask({
       ...task,
       id: this.taskId()
-    }) : this.baseApiService.createTask(task);
+    }) : this.baseApiService.updateTask(this.taskId(), task);
 
     const subscription = api.subscribe(
       {

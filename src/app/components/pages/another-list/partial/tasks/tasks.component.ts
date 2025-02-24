@@ -15,7 +15,7 @@ import { ListModel } from '../../../../../models/list.model';
 import { BaseApiService } from '../../../../../services/base-api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { ColumnModel } from '../../../../shared/base-list/models/column.model';
+import { ColumnModel } from '../../../../../models/column.model';
 import { TaskModel } from '../../../../../models/task.model';
 
 @Component({

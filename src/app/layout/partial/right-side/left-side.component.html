@@ -7,7 +7,7 @@
       <i class="fal fa-bars"></i>
     </button>
     @if (!isLeftSidebarCollapsed()) {
-      <div class="logo-text">TAPSEL</div>
+      <div class="logo-text">TAPSELL</div>
       <button class="btn-close" (click)="closeSidenav()">
         <i class="fal fa-times close-icon"></i>
       </button>
@@ -22,10 +22,10 @@
           routerLinkActive="active"
           [routerLinkActiveOptions]="{ exact: true }"
         >
+          <i class="sidenav-link-icon" [class]="item.icon"></i>
           @if (!isLeftSidebarCollapsed()) {
             <span class="sidenav-link-text">{{ item.label }}</span>
           }
-          <i class="sidenav-link-icon" [class]="item.icon"></i>
         </a>
       </li>
     }

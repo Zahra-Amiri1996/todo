@@ -4,14 +4,14 @@ import {
   signal,
 } from '@angular/core';
 import { MainComponent } from './partial/main/main.component';
-import { RightSideComponent } from './partial/right-side/right-side.component';
+import { LeftSideComponent } from './partial/right-side/left-side.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-layout',
   imports: [
     MainComponent,
-    RightSideComponent
+    LeftSideComponent
   ],
   templateUrl: './layout.component.html',
   standalone: true,

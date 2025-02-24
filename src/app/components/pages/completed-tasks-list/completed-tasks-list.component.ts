@@ -1,27 +1,56 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { BaseListComponent } from '../../shared/base-list/base-list.component';
-import { ColumnModel } from '../../shared/base-list/models/column.model';
+import { ColumnModel } from '../../../models/column.model';
 import { ListModel } from '../../../models/list.model';
 import { BaseApiService } from '../../../services/base-api.service';
-import { HttpClient } from '@angular/common/http';
 import { Subscription } from 'rxjs';
+import { DatePipe, NgTemplateOutlet } from '@angular/common';
+import { MatIconButton } from '@angular/material/button';
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell, MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef, MatTable
+} from '@angular/material/table';
+import { MatIcon } from '@angular/material/icon';
+import { TaskModel } from '../../../models/task.model';
 
 @Component({
   selector: 'app-completed-tasks-list',
   imports: [
-    BaseListComponent
+    DatePipe,
+    MatCell,
+    MatCellDef,
+    MatHeaderCell,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatIcon,
+    MatIconButton,
+    MatRow,
+    MatRowDef,
+    MatTable,
+    NgTemplateOutlet,
+    MatColumnDef,
+    MatHeaderCellDef
   ],
   templateUrl: './completed-tasks-list.component.html',
   standalone: true,
   styleUrl: './completed-tasks-list.component.scss'
 })
 export class CompletedTasksListComponent implements OnInit, OnDestroy {
-  columns = signal<ColumnModel<ListModel>[]>([]);
-  dataSource = signal<ListModel[]>([]);
-  displayedColumns = signal<string[]>(['title', 'description', 'date', 'actions']);
+  columns = signal<ColumnModel<TaskModel>[]>([]);
+  dataSource = signal<TaskModel[]>([]);
+  displayedColumns = signal<string[]>(['title', 'date', 'description', 'actions']);
   baseApiService = inject(BaseApiService);
   subscriptions = new Subscription();
-  http = inject(HttpClient);
+
+  ngOnInit(): void {
+    this.setColumns();
+    this.getData();
+  }
 
   getData(): void {
     const subscription = this.baseApiService.getCompletedTasks().subscribe({
@@ -54,14 +83,19 @@ export class CompletedTasksListComponent implements OnInit, OnDestroy {
       {
         columnDef: 'title',
         header: 'title',
-        cell: (element: ListModel) => `${element.title}`,
+        cell: (element: TaskModel) => `${element.title}`,
         type: 'string'
       },
-
+      {
+        columnDef: 'description',
+        header: 'description',
+        cell: (element: TaskModel) => `${element.description}`,
+        type: 'string'
+      },
       {
         columnDef: 'date',
         header: 'date',
-        cell: (element: ListModel) => `${element.date}`,
+        cell: (element: TaskModel) => `${element.date}`,
         type: 'date'
       },
       {
@@ -73,16 +107,8 @@ export class CompletedTasksListComponent implements OnInit, OnDestroy {
     ]);
   }
 
-  viewTask(task: ListModel): void {
-    // todo something
-  }
-
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
 
-  ngOnInit(): void {
-    this.setColumns();
-    this.getData();
-  }
 }
