@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { DatePipe, NgTemplateOutlet } from '@angular/common';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import {
@@ -12,11 +12,10 @@ import {
 } from '@angular/material/table';
 import { MatIcon } from '@angular/material/icon';
 import { ListModel } from '../../../models/list.model';
-import { BaseApiService } from '../../../services/base-api.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { ColumnModel } from '../../../models/column.model';
 import { TaskModel } from '../../../models/task.model';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { BaseComponentComponent } from '../../share/base-component/base-component.component';
 
 @Component({
   selector: 'app-tasks',
@@ -35,18 +34,14 @@ import { TaskModel } from '../../../models/task.model';
     MatTable,
     NgTemplateOutlet,
     MatHeaderCellDef,
-    MatColumnDef
+    MatColumnDef,
+    MatCheckbox
   ],
   templateUrl: './tasks.component.html',
   standalone: true,
   styleUrl: './tasks.component.scss'
 })
-export class TasksComponent implements OnDestroy, OnInit {
-  baseApiService = inject(BaseApiService);
-  router = inject(Router);
-  activatedRoute = inject(ActivatedRoute);
-  subscriptions = new Subscription();
-  listId = signal('');
+export class TasksComponent extends BaseComponentComponent implements OnDestroy, OnInit {
   // FOR TABLE
   columns = signal<ColumnModel<TaskModel>[]>([]);
   dataSource = signal<ListModel[]>([]);
@@ -108,7 +103,7 @@ export class TasksComponent implements OnDestroy, OnInit {
 
   deleteTask(row: ListModel): void {
     if (row._id) {
-      const subscription = this.baseApiService.deleteList(row._id).subscribe({
+      const subscription = this.baseApiService.deleteTask(row._id).subscribe({
         next: () => {
           this.getData();
         },
@@ -122,15 +117,11 @@ export class TasksComponent implements OnDestroy, OnInit {
 
   editTask(row: ListModel): void {
     if (row._id) {
-      this.router.navigate(['task'], {queryParams: {taskId: this.listId(), listId: this.listId(),}}).then();
+      this.router.navigate(['task'], {queryParams: {taskId: row._id, listId: this.listId(),}}).then();
     }
   }
 
   addTask(): void {
     this.router.navigate(['task'], {queryParams: {listId: this.listId()}}).then();
-  }
-
-  ngOnDestroy() {
-    this.subscriptions.unsubscribe();
   }
 }

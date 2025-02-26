@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ListModel } from '../models/list.model';
+import { TaskModel } from '../models/task.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,10 +12,6 @@ export class BaseApiService {
   http = inject(HttpClient);
   private baseUrl = 'http://localhost:3000/api';
 
-  getAllTasks(): Observable<ListModel[]> {
-    return this.http.get<ListModel[]>(`${this.baseUrl}/tasks`);
-  }
-
   getTasksByList(listId: string): Observable<ListModel[]> {
     return this.http.get<ListModel[]>(`${this.baseUrl}/tasks/query/${listId}`);
   }
@@ -23,12 +20,12 @@ export class BaseApiService {
     return this.http.get<ListModel>(`${this.baseUrl}/tasks/${taskId}`);
   }
 
-  createTask(task: ListModel): Observable<ListModel> {
-    return this.http.post<ListModel>(`${this.baseUrl}/tasks`, task);
+  createTask(task: TaskModel): Observable<TaskModel> {
+    return this.http.post<TaskModel>(`${this.baseUrl}/tasks`, task);
   }
 
-  updateTask(taskId: string, task: ListModel): Observable<ListModel> {
-    return this.http.put<ListModel>(`${this.baseUrl}/tasks/${taskId}`, task);
+  updateTask(taskId: string, task: TaskModel): Observable<TaskModel> {
+    return this.http.put<TaskModel>(`${this.baseUrl}/tasks/${taskId}`, task);
   }
 
   deleteTask(taskId: string): Observable<any> {

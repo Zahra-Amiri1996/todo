@@ -27,11 +27,14 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns();"></tr>
   </table>
   <ng-template #actionTemplate let-row>
-    <button mat-icon-button (click)="editTask(row)">
-      <mat-icon>edit</mat-icon>
-    </button>
-    <button mat-icon-button (click)="deleteTask(row)">
-      <mat-icon>delete</mat-icon>
-    </button>
+    <div class="align-actions">
+      <button mat-icon-button (click)="editTask(row)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button (click)="deleteTask(row)">
+        <mat-icon>delete</mat-icon>
+      </button>
+      <mat-checkbox [checked]="row.done" (click)="changeState(row , $event)"></mat-checkbox>
+    </div>
   </ng-template>
 </div>

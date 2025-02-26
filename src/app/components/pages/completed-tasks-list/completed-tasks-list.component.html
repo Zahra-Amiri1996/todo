@@ -1,4 +1,7 @@
 <div class="main-container">
+  <h1>
+    COMPLETED TASKS
+  </h1>
   <table mat-table [dataSource]="dataSource()" class="mat-elevation-z8 table-container">
     @for (column of columns(); track column) {
       <ng-container [matColumnDef]="column.columnDef">

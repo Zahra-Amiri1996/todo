@@ -1,26 +1,68 @@
+$main-bg: #f4f7fa;
+$text-font: 'Roboto', sans-serif;
+$spacing: 8px;
+$border-radius: 6px;
+$box-shadow: 0 3px 5px -1px rgba(0, 0, 0, .2),
+0 6px 10px 0 rgba(0, 0, 0, .14),
+0 1px 18px 0 rgba(0, 0, 0, .12);
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html body {
+html, body {
   height: 100%;
+  font-family: $text-font;
+  background: $main-bg;
 }
 
-body {
-  position: relative;
-  font-family: "Roboto", sans-serif;
-  background: #f4f7fa;
+.align-actions {
+  @include flex-center;
+  width: 100%;
 }
 
 .table-container {
   width: 100%;
-  border-radius: 6px;
+  border-radius: $border-radius;
   overflow: hidden;
 }
 
 .mat-elevation-z8 {
-  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, .2), 0 6px 10px 0 rgba(0, 0, 0, .14), 0 1px 18px 0 rgba(0, 0, 0, .12);
+  box-shadow: $box-shadow;
 }
 
+.main-container {
+  display: flex;
+  flex-direction: column;
+  gap: 3 * $spacing;
+}
+
+mat-form-field {
+  width: 100%;
+  margin: 1.5 * $spacing $spacing;
+}
+
+.mat-toggle-container {
+  margin-bottom: $spacing;
+}
+
+.mat-card {
+  padding: 1.5 * $spacing;
+
+  .mat-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing;
+  }
+}
+
+h2 {
+  margin: $spacing 0;
+}

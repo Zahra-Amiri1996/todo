@@ -1,8 +1,6 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { ColumnModel } from '../../../models/column.model';
 import { ListModel } from '../../../models/list.model';
-import { BaseApiService } from '../../../services/base-api.service';
-import { Subscription } from 'rxjs';
 import { DatePipe, NgTemplateOutlet } from '@angular/common';
 import { MatIconButton } from '@angular/material/button';
 import {
@@ -17,6 +15,8 @@ import {
 } from '@angular/material/table';
 import { MatIcon } from '@angular/material/icon';
 import { TaskModel } from '../../../models/task.model';
+import { BaseComponentComponent } from '../../share/base-component/base-component.component';
+import { DeleteDialogComponent } from '../../share/delete-dialog/delete-dialog.component';
 
 @Component({
   selector: 'app-completed-tasks-list',
@@ -40,12 +40,10 @@ import { TaskModel } from '../../../models/task.model';
   standalone: true,
   styleUrl: './completed-tasks-list.component.scss'
 })
-export class CompletedTasksListComponent implements OnInit, OnDestroy {
+export class CompletedTasksListComponent extends BaseComponentComponent implements OnInit, OnDestroy {
   columns = signal<ColumnModel<TaskModel>[]>([]);
   dataSource = signal<TaskModel[]>([]);
   displayedColumns = signal<string[]>(['title', 'date', 'description', 'actions']);
-  baseApiService = inject(BaseApiService);
-  subscriptions = new Subscription();
 
   ngOnInit(): void {
     this.setColumns();
@@ -62,20 +60,6 @@ export class CompletedTasksListComponent implements OnInit, OnDestroy {
       }
     });
     this.subscriptions.add(subscription);
-  }
-
-  deleteTask(row: ListModel): void {
-    if (row._id) {
-      const subscription = this.baseApiService.deleteTask(row._id).subscribe({
-        next: () => {
-          this.getData();
-        },
-        error: () => {
-          alert('we have an error :(');
-        }
-      });
-      this.subscriptions.add(subscription);
-    }
   }
 
   setColumns() {
@@ -107,8 +91,28 @@ export class CompletedTasksListComponent implements OnInit, OnDestroy {
     ]);
   }
 
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+  deleteTask(row: ListModel) {
+    this.subscriptions.add(this.dialog.open(DeleteDialogComponent, {
+      width: '400px',
+      data: {title: 'Delete Task', message: 'Are you sure ?'},
+    }).afterClosed().subscribe(
+      {
+        next: (res) => {
+          if (res) {
+            if (row._id) {
+              const subscription = this.baseApiService.deleteTask(row._id).subscribe({
+                next: () => {
+                  this.getData();
+                },
+                error: () => {
+                  alert('we have an error :(');
+                }
+              });
+              this.subscriptions.add(subscription);
+            }
+          }
+        }
+      }
+    ));
   }
-
 }

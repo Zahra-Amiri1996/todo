@@ -1,10 +1,7 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { ColumnModel } from '../../../models/column.model';
 import { ListModel } from '../../../models/list.model';
-import { BaseApiService } from '../../../services/base-api.service';
-import { Router, RouterOutlet } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIconButton } from '@angular/material/button';
 import { CurrencyPipe, DatePipe, NgTemplateOutlet } from '@angular/common';
 import {
   MatCell,
@@ -16,11 +13,15 @@ import {
   MatRowDef, MatTable
 } from '@angular/material/table';
 import { MatIcon } from '@angular/material/icon';
+import { TaskModel } from '../../../models/task.model';
+import { MatCard, MatCardContent } from '@angular/material/card';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { BaseComponentComponent } from '../../share/base-component/base-component.component';
+import { DeleteDialogComponent } from '../../share/delete-dialog/delete-dialog.component';
 
 @Component({
   selector: 'app-daily-task-list',
   imports: [
-    MatButton,
     CurrencyPipe,
     DatePipe,
     MatCell,
@@ -36,22 +37,23 @@ import { MatIcon } from '@angular/material/icon';
     NgTemplateOutlet,
     MatColumnDef,
     MatHeaderCellDef,
+    MatCard,
+    MatCardContent,
+    MatCheckbox,
   ],
   templateUrl: './daily-task-list.component.html',
   standalone: true,
   styleUrl: './daily-task-list.component.scss'
 })
-export class DailyTaskListComponent implements OnInit, OnDestroy {
-  columns = signal<ColumnModel<ListModel>[]>([]);
-  dataSource = signal<ListModel[]>([]);
-  displayedColumns = signal<string[]>(['title', 'date', 'isMain' ,  'actions']);
-  baseApiService = inject(BaseApiService);
-  router = inject(Router);
-  subscriptions = new Subscription();
+export class DailyTaskListComponent extends BaseComponentComponent implements OnInit, OnDestroy {
+  columns = signal<ColumnModel<TaskModel>[]>([]);
+  dataSource = signal<TaskModel[]>([]);
+  displayedColumns = signal<string[]>(['title', 'date', 'description', 'actions']);
+  mainList = signal<ListModel>({_id: '', isMain: false, title: '', date: new Date()});
 
   ngOnInit(): void {
     this.setColumns();
-    this.getData();
+    this.getMainData();
   }
 
   setColumns() {
@@ -59,19 +61,19 @@ export class DailyTaskListComponent implements OnInit, OnDestroy {
       {
         columnDef: 'title',
         header: 'title',
-        cell: (element: ListModel) => `${element.title}`,
+        cell: (element: TaskModel) => `${element.title}`,
         type: 'string'
       },
       {
         columnDef: 'date',
         header: 'date',
-        cell: (element: ListModel) => `${element.date}`,
+        cell: (element: TaskModel) => `${element.date}`,
         type: 'date'
       },
       {
-        columnDef: 'isMain',
-        header: 'isMain',
-        cell: (element: ListModel) => `${element.isMain}`,
+        columnDef: 'description',
+        header: 'description',
+        cell: (element: TaskModel) => `${element.description}`,
         type: 'string'
       },
       {
@@ -83,10 +85,11 @@ export class DailyTaskListComponent implements OnInit, OnDestroy {
     ]);
   }
 
-  getData(): void {
-    const subscription = this.baseApiService.getMainList().subscribe({
+  getTasksFromMainList(listId: string) {
+    this.dataSource.set([]);
+    const subscription = this.baseApiService.getTasksByList(listId).subscribe({
       next: (res) => {
-        this.dataSource.set([res]);
+        this.dataSource.set(res);
       },
       error: () => {
         alert('we have an error :(');
@@ -95,33 +98,49 @@ export class DailyTaskListComponent implements OnInit, OnDestroy {
     this.subscriptions.add(subscription);
   }
 
-  deleteList(row: ListModel): void {
-    if (row._id) {
-      const subscription = this.baseApiService.deleteList(row._id).subscribe({
-        next: () => {
-          this.getData();
-        },
-        error: () => {
-          alert('we have an error :(');
+  getMainData(): void {
+    const subscription = this.baseApiService.getMainList().subscribe({
+      next: (res) => {
+        this.mainList.set(res);
+        if (res._id) {
+          this.getTasksFromMainList(res._id);
         }
-      });
-      this.subscriptions.add(subscription);
-    }
+      },
+      error: () => {
+        alert('we have an error :(');
+      }
+    });
+    this.subscriptions.add(subscription);
   }
 
-  editList(row: ListModel): void {
+  deleteTask(row: ListModel) {
+    this.subscriptions.add(this.dialog.open(DeleteDialogComponent, {
+      width: '400px',
+      data: {title: 'Delete Task', message: 'Are you sure ?'},
+    }).afterClosed().subscribe(
+      {
+        next: (res) => {
+          if (res) {
+            if (row._id) {
+              const subscription = this.baseApiService.deleteTask(row._id).subscribe({
+                next: () => {
+                  this.getTasksFromMainList(this.mainList()._id);
+                },
+                error: () => {
+                  alert('we have an error :(');
+                }
+              });
+              this.subscriptions.add(subscription);
+            }
+          }
+        }
+      }
+    ));
+  }
+
+  editList(row: TaskModel): void {
     if (row._id) {
-      this.router.navigate([ 'task', row._id]).then();
+      this.router.navigate(['task', row._id]).then();
     }
-  }
-
-  addList(row: ListModel): void {
-    if (row._id) {
-      this.router.navigate([ 'task']).then();
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
   }
 }

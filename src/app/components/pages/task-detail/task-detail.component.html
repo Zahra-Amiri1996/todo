@@ -5,8 +5,8 @@
       <form [formGroup]="taskForm()" (ngSubmit)="onSubmit()">
         <mat-form-field appearance="outline">
           <mat-label>Title</mat-label>
-          <input matInput id="title" type="text" formControlName="title" placeholder="Enter task title" />
-          @if(taskForm().get('title')?.invalid && taskForm().get('title')?.touched){
+          <input matInput id="title" type="text" formControlName="title" placeholder="Enter task title"/>
+          @if (taskForm().get('title')?.invalid && taskForm().get('title')?.touched) {
             <mat-error>
               فیلد عنوان اجباری می‌باشد
             </mat-error>
@@ -20,7 +20,7 @@
             formControlName="description"
             placeholder="Enter task description"
           ></textarea>
-          @if (taskForm().get('description')?.invalid && taskForm().get('description')?.touched){
+          @if (taskForm().get('description')?.invalid && taskForm().get('description')?.touched) {
             <mat-error>
               فیلد توضیحات اجباری می‌باشد
             </mat-error>
@@ -32,7 +32,7 @@
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
-        <button mat-raised-button color="primary" type="submit" [disabled]="taskForm().invalid">
+        <button style="margin: 8px;" mat-raised-button color="primary" type="submit" [disabled]="taskForm().invalid">
           Submit
         </button>
       </form>

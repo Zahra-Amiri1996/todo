@@ -1,15 +1,12 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { BaseApiService } from '../../../services/base-api.service';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatButton } from '@angular/material/button';
 import { MatInput } from '@angular/material/input';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
-import { Location } from '@angular/common';
+import { BaseComponentComponent } from '../../share/base-component/base-component.component';
 
 @Component({
   selector: 'app-list-detail',
@@ -31,19 +28,12 @@ import { Location } from '@angular/common';
   standalone: true,
   styleUrl: './list-detail.component.scss'
 })
-export class ListDetailComponent implements OnInit, OnDestroy {
-  baseApiService = inject(BaseApiService);
-  location = inject(Location);
-  formBuilder = inject(FormBuilder);
-  activatedRoute = inject(ActivatedRoute);
-  subscriptions = new Subscription();
+export class ListDetailComponent extends BaseComponentComponent implements OnInit, OnDestroy {
   listForm = signal<FormGroup>(this.formBuilder.group({
     title: ['', Validators.required],
     isMain: [false],
     date: ['', Validators.required],
   }));
-  isEditMode = signal(false);
-  listId = signal('');
 
   ngOnInit() {
     this.detectEditMode();
@@ -63,7 +53,6 @@ export class ListDetailComponent implements OnInit, OnDestroy {
   setFormDataInEditMode(): void {
     const subscription = this.baseApiService.getListById(this.listId()).subscribe({
       next: (res) => {
-        console.log(res);
         this.listForm().patchValue(res);
       },
       error: () => {
@@ -73,13 +62,11 @@ export class ListDetailComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    // todo add spinner
     if (this.listForm().invalid) {
       alert('not completed');
       return;
     }
     const task = this.listForm().value;
-
     const api = this.isEditMode() ? this.baseApiService.updateList(this.listId(), {
       ...task,
       id: this.listId()
@@ -98,13 +85,5 @@ export class ListDetailComponent implements OnInit, OnDestroy {
       }
     );
     this.subscriptions.add(subscription);
-  }
-
-  ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
-  openDatePicker(picker: MatDatepicker<any>) {
-    picker.open();
   }
 }

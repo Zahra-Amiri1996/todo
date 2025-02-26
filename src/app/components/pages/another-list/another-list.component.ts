@@ -1,6 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { BaseApiService } from '../../../services/base-api.service';
-import { Subscription } from 'rxjs';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { DatePipe, NgTemplateOutlet } from '@angular/common';
 import {
@@ -14,8 +12,9 @@ import {
 } from '@angular/material/table';
 import { MatIcon } from '@angular/material/icon';
 import { ListModel } from '../../../models/list.model';
-import { Router } from '@angular/router';
 import { ColumnModel } from '../../../models/column.model';
+import { BaseComponentComponent } from '../../share/base-component/base-component.component';
+import { DeleteDialogComponent } from '../../share/delete-dialog/delete-dialog.component';
 
 @Component({
   selector: 'app-another-list',
@@ -40,10 +39,7 @@ import { ColumnModel } from '../../../models/column.model';
   standalone: true,
   styleUrl: './another-list.component.scss'
 })
-export class AnotherListComponent implements OnDestroy, OnInit {
-  baseApiService = inject(BaseApiService);
-  router = inject(Router);
-  subscriptions = new Subscription();
+export class AnotherListComponent extends BaseComponentComponent implements OnInit {
   // FOR TABLE
   columns = signal<ColumnModel<ListModel>[]>([]);
   dataSource = signal<ListModel[]>([]);
@@ -95,18 +91,29 @@ export class AnotherListComponent implements OnDestroy, OnInit {
     this.subscriptions.add(subscription);
   }
 
-  deleteList(row: ListModel): void {
-    if (row._id) {
-      const subscription = this.baseApiService.deleteList(row._id).subscribe({
-        next: () => {
-          this.getData();
-        },
-        error: () => {
-          alert('we have an error :(');
+  deleteList(row: ListModel) {
+    this.subscriptions.add(this.dialog.open(DeleteDialogComponent, {
+      width: '400px',
+      data: {title: 'Delete Task', message: 'Are you sure ?'},
+    }).afterClosed().subscribe(
+      {
+        next: (res) => {
+          if (res) {
+            if (row._id) {
+              const subscription = this.baseApiService.deleteList(row._id).subscribe({
+                next: () => {
+                  this.getData();
+                },
+                error: () => {
+                  alert('we have an error :(');
+                }
+              });
+              this.subscriptions.add(subscription);
+            }
+          }
         }
-      });
-      this.subscriptions.add(subscription);
-    }
+      }
+    ));
   }
 
   editList(row: ListModel): void {
@@ -121,9 +128,5 @@ export class AnotherListComponent implements OnDestroy, OnInit {
 
   toToHandleTask(row: ListModel): void {
     this.router.navigate(['tasks', row._id]).then();
-  }
-
-  ngOnDestroy() {
-    this.subscriptions.unsubscribe();
   }
 }

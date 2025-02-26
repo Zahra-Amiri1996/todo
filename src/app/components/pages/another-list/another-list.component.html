@@ -1,4 +1,7 @@
 <div class="main-container">
+  <h1>
+    ANOTHER LIST
+  </h1>
   <div class="header">
     <button mat-flat-button (click)="addList()">ADD LIST</button>
   </div>
@@ -27,14 +30,16 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns();"></tr>
   </table>
   <ng-template #actionTemplate let-row>
-    <button mat-icon-button (click)="editList(row)">
-      <mat-icon>edit</mat-icon>
-    </button>
-    <button mat-icon-button (click)="deleteList(row)">
-      <mat-icon>delete</mat-icon>
-    </button>
-    <button mat-icon-button (click)="toToHandleTask(row)">
-      <mat-icon>view_headline</mat-icon>
-    </button>
+    <div class="align-actions">
+      <button mat-icon-button (click)="editList(row)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button (click)="deleteList(row)">
+        <mat-icon>delete</mat-icon>
+      </button>
+      <button mat-icon-button (click)="toToHandleTask(row)">
+        <mat-icon>view_headline</mat-icon>
+      </button>
+    </div>
   </ng-template>
 </div>
